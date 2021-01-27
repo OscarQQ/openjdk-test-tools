@@ -92,8 +92,8 @@ export default class Dacapo extends Component {
 
 		// combine results having the same JDK build date
 		results.forEach(( t, i ) => {
-			if ( t.buildResult !== "SUCCESS" ) return;
-			const jdkDate = t.jdkDate;	
+			const jdkDate = t.jdkDate;
+			if ( t.buildResult !== "SUCCESS" || !jdkDate) return;
 			resultsByJDKBuild[jdkDate] = resultsByJDKBuild[jdkDate] || [];
 			t.tests.forEach(( test, i ) => {
 				let eclipse = null;
@@ -116,7 +116,7 @@ export default class Dacapo extends Component {
 
 				if ( !eclipse && !h2 && !lusearch ) {
 					return;
-				}
+                }
                  // TODO: current code only considers one interation. This needs to be updated
 				resultsByJDKBuild[jdkDate].push( {
 					eclipse,
@@ -129,9 +129,11 @@ export default class Dacapo extends Component {
 						javaVersion: t.javaVersion,
 						jdkDate: t.jdkDate,
 					},
-				} );
+                } );
 			});
-		} );
+        } );
+        
+        console.log(resultsByJDKBuild);
 
 		math.sort( Object.keys( resultsByJDKBuild ) ).forEach(( k, i ) => {
 			const date = getEpochTime(k);
